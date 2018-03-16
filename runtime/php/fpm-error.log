@@ -1,0 +1,28 @@
+[26-Dec-2017 11:35:35] NOTICE: fpm is running, pid 1
+[26-Dec-2017 11:35:35] NOTICE: ready to handle connections
+[26-Dec-2017 11:36:46] NOTICE: Terminating ...
+[26-Dec-2017 11:36:47] NOTICE: exiting, bye-bye!
+[26-Dec-2017 11:36:52] NOTICE: fpm is running, pid 1
+[26-Dec-2017 11:36:52] NOTICE: ready to handle connections
+[26-Dec-2017 11:39:00] NOTICE: Terminating ...
+[26-Dec-2017 11:39:00] NOTICE: exiting, bye-bye!
+[26-Dec-2017 11:39:10] NOTICE: fpm is running, pid 1
+[26-Dec-2017 11:39:10] NOTICE: ready to handle connections
+[26-Dec-2017 11:40:13] NOTICE: Terminating ...
+[26-Dec-2017 11:40:13] NOTICE: exiting, bye-bye!
+[26-Dec-2017 11:40:23] NOTICE: fpm is running, pid 1
+[26-Dec-2017 11:40:23] NOTICE: ready to handle connections
+[26-Dec-2017 11:44:43] NOTICE: Terminating ...
+[26-Dec-2017 11:44:43] NOTICE: exiting, bye-bye!
+[26-Dec-2017 11:44:52] NOTICE: fpm is running, pid 1
+[26-Dec-2017 11:44:52] NOTICE: ready to handle connections
+[26-Dec-2017 11:45:01] WARNING: [pool www] child 6, script '/opt/webroot/backend/web/index.php' (request: "GET /index.php?r=site%2Flogin") executing too slow (1.158653 sec), logging
+[26-Dec-2017 11:45:01] NOTICE: child 6 stopped for tracing
+[26-Dec-2017 11:45:01] NOTICE: about to trace 6
+[26-Dec-2017 11:45:01] NOTICE: finished trace of 6
+[26-Dec-2017 11:50:35] WARNING: [pool www] child 14, script '/opt/webroot/backend/web/index.php' (request: "GET /index.php") executing too slow (1.329899 sec), logging
+[26-Dec-2017 11:50:35] NOTICE: child 14 stopped for tracing
+[26-Dec-2017 11:50:35] NOTICE: about to trace 14
+[26-Dec-2017 11:50:35] NOTICE: finished trace of 14
+[28-Dec-2017 10:34:01] NOTICE: Terminating ...
+[28-Dec-2017 10:34:03] NOTICE: exiting, bye-bye!

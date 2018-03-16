@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!--meta name="viewport" id="viewport" content="target-densitydpi=1,width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1" /-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">	
+    <title>在线测评 - 巨人教育</title>
+	<link rel="stylesheet" href="static/css/style.css">
+   	<script src="static/js/vue.min.js"></script>
+    <script src="static/js/vue-router.js"></script>
+	<script src="static/js/base64.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+<body>
+
+<div id="jurenapp_test">
+  <!-- route outlet -->
+  <!-- component matched by the route will render here -->
+  <router-view>
+  </router-view>
+</div>
+
+<script type="text/x-template" id="index">
+<div id="tindex">
+<div class="jrkefutop">
+   <img src="static/images/logo.png" alt="" class="jlogo">
+   <div class="juinfo" v-if="state.isLogin == 1">您好{{state.uname}}，欢迎来到巨人教育！</div>
+   <div class="juinfo" v-if="state.isLogin == 0"><a :href="login_url">登录 </a> </div>
+</div>
+	<div class="jrkefutoptitle">
+		{{state.paper_title}}
+	</div>
+<div class="act-con" id="index">
+    <img src="static/images/zindex_01.jpg" alt="">
+	<img src="static/images/zindex_02.jpg" alt="" @click="doTest()">
+    <img src="static/images/zindex_03.jpg" alt="">
+    <img src="static/images/zindex_04.jpg" alt="" v-on:click="show_test_info()">
+    <img src="static/images/zindex_05.jpg" alt="">	
+</div>	
+<div class="act-fade2" v-show="visshw==true">
+    <div class="act-pop2">
+        <i class="close" v-on:click="show_test_info()"></i>
+        <div class="act-pop-con2">
+
+	    <img src="static/images/tipbg.png">
+
+        </div>
+    </div>
+</div>
+</div>
+</script>
+
+<script type="text/x-template" id="dotest">
+<div id="ttest" class="ttest">
+    <div class="ttitle">
+	     <div class="c40">答题人:<span>{{state.uname}}<span></div>
+	     <div class="c40">答题时间:<span>{{time}}<span></div>
+	     <div class="c20"><span>{{now}}</span>/{{total}}页</div>		 
+	</div>
+    <div class="tdetail">
+	    <div class="dtitle">{{now}}. <span v-html="detail.question_content"></span></div>
+		<div class="danswers">
+		   <ul>
+		      <li v-for="item in detail.options">
+				<span  v-on:click="settest(item.option_name, item.question_id, item.id)"> <i :class="item.option_name==setanser? 'setyes':'setno'">{{ item.option_name }}</i>{{ item.option_content }}</span>
+			  </li>
+		   </ul>
+		</div>
+		<div class="dresult">您的答案是:{{setanser}}</div>
+		<div class="dnextbtn" v-if="now < total" v-on:click="donext(detail.question_id)">下一题</div>
+		<div class="dnextbtn" v-if="now >= total" v-on:click="getresult(detail.question_id)">查看结果</div>
+    </div>	
+    <img src="static/images/ttestbg.png" class="bg-img">
+</div>
+</script>
+
+<script type="text/x-template" id="result">
+<div class="ttestres">
+    <img src="static/images/resultbg.png" style="position: fixed;">
+	<div class="rtop">
+	   <div class="res_title">{{state.paper_title}}</div>
+	   <div class="res_user">{{state.uname}}同学，您此次测验的评分是</div>
+	   <img src="static/images/result_01.png" class="uscore">	   
+	   <div class="res_score">{{all_score}}分</div>
+    </div>
+    <div class="rdetail">
+	     <div class="rdetailtop">
+		 	  <img src="static/images/resbgtop.png" style="width:100%;margin-top:16px;float:left;height:52px;">
+		      <div class="topl">答题情况</div>
+			  <div class="topr"><i class="rc1">1</i><span>正确</span><i class="rc2">2</i><span>错误</span><i class="rc3">3</i><span>未作答</span></div> 
+		 </div>
+	     <div class="rdetailmid">
+		     <ul v-for="(item, index) in result">
+
+			    <li v-if="item.status == 1">
+				   <div class="midtop rc1"><span>{{index+1}}</span><span class="rc4">{{item.answer.option_name}}</span></div>
+				   <div class="midbom">+{{item.score}}</div>
+				</li>
+			    <li v-else-if="item.status == 2">
+				   <div class="midtop rc2"><span>{{index+1}}</span><span class="rc4">{{item.answer.option_name}}</span></div>
+				   <div class="midbom">答案{{item.correct_answer.option_name}}</div>
+				</li>
+			    <li v-else-if="item.status == 3">
+				   <div class="midtop rc3"><span>{{index+1}}</span><span class="rc4">?</span></div>
+				   <div class="midbom">答案{{item.correct_answer.option_name}}</div>
+				</li>
+
+			 </ul>
+		 </div>
+	     <div class="rdetailbom">
+		     <div class="boml">总分</div>
+			 <div class="bomr">{{all_score}}分</div>
+		 </div>		 
+	</div>	
+</div>
+</script>
+
+
+<script> 
+//初始化信息
+var state;
+var token;
+var qlist = [];
+var result = [];
+var all_score = 0;
+var qcount = 0;
+var host = 'http://59.172.107.26:8086/index.php?r=';
+var jump_url = '';
+var login_url =  '';
+
+var Home = Vue.extend({
+    template: '#index',
+    data(){
+        return{
+		    id:'',
+			paper_title: '试卷标题',
+            visshw: false,
+		    isttest: true,
+			state : {
+				isLogin  :0,       //初始时候给一个 isLogin=0 表示用户未登录
+				uname    : '',
+				time  :10,       //答题秒
+				jid      : this.$route.query.pid,     //试卷id
+				paper_title: '',
+				jtotal   :0,   //试卷总题数
+				jnow     :1,    //当前题
+				jdetail: {},
+			},
+        }
+    },
+	created() {
+		state = this.state;
+		login_url = 'http://e1.whjuren.com/public_user/login?returnUrl='+ 'http://' + window.location.host+'/jump.php/pid/'+ this.$route.query.pid+'&jrappid=201801';
+		token = this.$route.query.uid;
+		if(token){
+			state.isLogin = 1;
+		}else{
+			state.isLogin = 0;
+		}
+		this.get_paper_info();
+		this.get_paper_detail();
+	},
+    mounted:function(){
+        this.id = this.$route.params.id
+    },
+	methods:{
+		show_test_info:function (event){
+				   this.visshw = ! this.visshw;
+		}, 
+		begain_test:function (event){
+				   console.log('letus,begain~!');
+		},
+		get_paper_info:function(){
+			var paper_id = this.$route.query.pid;
+			var req_url = host+'/v0/test/paper-info';
+			axios.get(req_url, {
+				params:{
+					pid: paper_id
+				}
+			}).then(function (res) {
+				this.state.paper_title = res.data.data.paper.title;
+			}) .catch(function (error) {
+				console.log(error);
+			});
+		},
+
+		get_paper_detail:function(){
+			console.log(token);
+			if(!token){
+				console.log('未登录');
+			}
+			var paper_id = this.$route.query.pid;
+			var req_url = host+'/v0/test/qlist';
+			axios.get(req_url, {
+				params:{
+					token: token,
+					paper_id: paper_id
+				}
+			}).then(function (res) {
+				qlist = res.data.data.list;
+				//总题数
+				this.state.jtotal = qlist.length;
+				this.state.jdetail = qlist[0];
+				this.state.uname = res.data.data.stu_info.user_name;
+			}) .catch(function (error) {
+				console.log(error);
+			});
+		},
+
+		doTest(){
+			if(!token){
+				alert('请先登录');
+			}else{
+				router.push('/dotest');
+			}
+		}
+
+	} 	
+});
+var Testing = Vue.extend({
+    template: '#dotest',
+    data(){
+        return{
+		    id:'',
+            visshw: false,
+		    isttest: true,
+			hour:0,
+			minute:0,
+			second:10,
+			millisecond:0,
+            inttm:null,
+			time : 0,
+            lastping:0,
+			total:0,
+			now:0,
+			setanser:'',
+			qid:0,
+			oid:0,
+			detail:{},
+			tid:[]
+        }
+    },
+	created(){
+		this.time     =  parseInt(state.jdetail.limit_time),
+		this.timer();
+
+	},
+	beforeCreate:function(){
+	  //alert('beforeCreate~@!');
+	  if(state.isLogin=='0')router.push('/index');
+	  //return;
+	},
+    destroyed:function(){
+	   //this.stop();
+	},
+    mounted:function(){
+        //this.id     = this.$route.params.id,
+		this.id       = state.jid,
+
+		this.total    = state.jtotal,
+		this.now      = state.jnow,
+		this.detail   = state.jdetail;
+
+    },
+	computed:{
+		time:function () {
+			if(this.time == 0){
+				return '00';
+			}
+			return this.time+'秒';
+		}
+	},
+	methods:{
+		show_test_info:function (event){
+				   this.visshw = ! this.visshw;
+		}, 
+		begain_test:function (event){
+				   console.log('letus,begain~!');
+		},
+
+        timer(){
+			console.log(this.time+ ' time');
+			if(this.time > 0){
+				this.time--;
+				var tid = setTimeout(this.timer, 1000);
+			}else{
+				//超时自动提交
+				if(this.now <= this.total){
+					console.log('time over');
+
+					if(this.now == this.total){
+						this.getresult(this.detail.question_id);
+					}else{
+						this.donext(this.detail.question_id);
+						this.timer();
+					}
+
+				}
+			}
+		},
+
+
+	    settest:function(as, qid, oid){
+            this.setanser=as;
+			this.qid = qid;
+			this.oid = oid;
+        },	
+		//下一题
+        donext:function(qid){
+			console.log(qid);
+			answer_ques(this.setanser, this.oid, qid, state.jid)
+			//保存当前结果并从从服务器获取数据更新state
+			var   jdetail = qlist[this.now]
+			this.now      = parseInt(this.now)+1;
+			this.detail   = jdetail;
+			this.setanser = '';
+			console.log(this.detail);
+			this.time = 0;
+			this.time = parseInt(this.detail.limit_time);
+        },
+		//保存答题时间
+        savetime:function(){
+           //此处保存至服务器
+		   console.log('save_time');
+        },
+        getresult:function(qid){
+			this.time = 0;
+			answer_ques(this.setanser, this.oid, qid, state.jid)
+		    var req_url = host + '/v0/test/end';
+			axios.get(req_url, {
+				params:{
+					token: token,
+					paper_id: state.jid,
+				}
+			}).then(function (res) {
+				console.log(res);
+				var list = res.data.data.list;
+
+				for(var i = 0; i < list.length; i++){
+					list[i].answer = JSON.parse(list[i].answer);
+					list[i].correct_answer = JSON.parse(list[i].correct_answer);
+					all_score += parseInt(list[i].score);
+				}
+				result = list;
+				router.push('/result');
+			}) .catch(function (error) {
+				console.log(error);
+			});
+		}		
+	} 	
+});
+
+/**
+ * modal 模态接口参数
+ * @param {string} modal.title 模态框标题
+ * @param {string} modal.text 模态框内容
+ * @param {boolean} modal.showbtn 是否显示按钮
+ * @param {string} modal.btnText 按钮文字
+ */
+
+ Vue.component('tips', {
+    props : ['tipsOptions'],
+    template : '#tips',
+
+    data(){
+        return{
+            show : false
+        }
+    },
+
+    computed:{
+        tips : {
+            get() {
+                let tips = this.tipsOptions || {};
+                tips = {
+                    title: tips.title || '提示',
+                    text: tips.text || '',
+                    showbtn : tips.showbtn || true,
+                    btnText : tips.btnText || '确定'
+                };
+                // console.log(tips);
+                return tips;
+            }
+        }
+    }
+})
+
+// 2. Define some routes
+// Each route should map to a component. The "component" can
+// either be an actual component constructor created via
+// Vue.extend(), or just a component options object.
+// We'll talk about nested routes later.
+const routes = [
+  { path: '/',redirect: '/index' },
+  { path: '/index', component: Home },
+  { path: '/dotest', component: Testing },
+  { path: '/result', component: { template: '#result' } }  
+]
+
+// 3. Create the router instance and pass the `routes` option
+// You can pass in additional options here, but let's
+// keep it simple for now.
+const router = new VueRouter({
+  routes
+})
+
+
+// 4. Create and mount the root instance.
+// Make sure to inject the router with the router option to make the
+// whole app router-aware.
+const app = new Vue({
+  el:'#jurenapp_test',
+  router  
+});		
+    </script>	
+<script>
+	function  answer_ques(setanser, oid, qid, pid) {
+		var req_url = host+'/v0/test/answer-submit';
+		var answer = {'option_name': setanser, 'option_id': oid};
+		axios.get(req_url, {
+			params:{
+				token: token,
+				paper_id: pid,
+				question_id: qid,
+				answer: answer
+			}
+		}).then(function (res) {
+			console.log(res);
+
+		}) .catch(function (error) {
+			console.log(error);
+		});
+	}
+
+</script>
+
+</body>
+</html>

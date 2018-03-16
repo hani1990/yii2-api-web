@@ -1,0 +1,41 @@
+
+[26-Dec-2017 11:45:01]  [pool www] pid 6
+script_filename = /opt/webroot/backend/web/index.php
+[0x00007f56f2a165b0] copy() /opt/webroot/vendor/yiisoft/yii2/helpers/BaseFileHelper.php:332
+[0x00007f56f2a164b0] copyDirectory() /opt/webroot/vendor/yiisoft/yii2/web/AssetManager.php:559
+[0x00007f56f2a163d0] publishDirectory() /opt/webroot/vendor/yiisoft/yii2/web/AssetManager.php:463
+[0x00007f56f2a16320] publish() /opt/webroot/vendor/yiisoft/yii2/web/AssetBundle.php:185
+[0x00007f56f2a16240] publish() /opt/webroot/vendor/yiisoft/yii2/web/AssetManager.php:268
+[0x00007f56f2a161a0] loadBundle() /opt/webroot/vendor/yiisoft/yii2/web/AssetManager.php:239
+[0x00007f56f2a16100] getBundle() /opt/webroot/vendor/yiisoft/yii2/web/View.php:286
+[0x00007f56f2a16000] registerAssetBundle() /opt/webroot/vendor/yiisoft/yii2/web/View.php:291
+[0x00007f56f2a15f00] registerAssetBundle() /opt/webroot/vendor/yiisoft/yii2/web/View.php:291
+[0x00007f56f2a15e00] registerAssetBundle() /opt/webroot/vendor/yiisoft/yii2/web/AssetBundle.php:125
+[0x00007f56f2a15d90] register() /opt/webroot/vendor/yiisoft/yii2/validators/RequiredValidator.php:91
+[0x00007f56f2a15cd0] clientValidateAttribute() /opt/webroot/vendor/yiisoft/yii2/widgets/ActiveField.php:763
+[0x00007f56f2a15ba0] getClientOptions() /opt/webroot/vendor/yiisoft/yii2/widgets/ActiveField.php:230
+[0x00007f56f2a15ad0] begin() /opt/webroot/vendor/yiisoft/yii2/widgets/ActiveField.php:220
+[0x00007f56f2a15a40] render() /opt/webroot/vendor/yiisoft/yii2-bootstrap/ActiveField.php:187
+[0x00007f56f2a15990] render() /opt/webroot/vendor/yiisoft/yii2/widgets/ActiveField.php:176
+[0x00007f56f2a15920] __toString() unknown:0
+[0x00007ffc7c375d70] ???() /opt/webroot/backend/views/site/login.php:20
+
+[26-Dec-2017 11:50:35]  [pool www] pid 14
+script_filename = /opt/webroot/backend/web/index.php
+[0x00007f56f2a164c0] copy() /opt/webroot/vendor/yiisoft/yii2/helpers/BaseFileHelper.php:332
+[0x00007f56f2a163c0] copyDirectory() /opt/webroot/vendor/yiisoft/yii2/helpers/BaseFileHelper.php:339
+[0x00007f56f2a162c0] copyDirectory() /opt/webroot/vendor/yiisoft/yii2/web/AssetManager.php:559
+[0x00007f56f2a161e0] publishDirectory() /opt/webroot/vendor/yiisoft/yii2/web/AssetManager.php:463
+[0x00007f56f2a16130] publish() /opt/webroot/vendor/yiisoft/yii2/web/AssetBundle.php:185
+[0x00007f56f2a16050] publish() /opt/webroot/vendor/yiisoft/yii2/web/AssetManager.php:268
+[0x00007f56f2a15fb0] loadBundle() /opt/webroot/vendor/yiisoft/yii2/web/AssetManager.php:239
+[0x00007f56f2a15f10] getBundle() /opt/webroot/vendor/yiisoft/yii2/web/View.php:286
+[0x00007f56f2a15e10] registerAssetBundle() /opt/webroot/vendor/yiisoft/yii2/web/AssetBundle.php:125
+[0x00007f56f2a15da0] register() /opt/webroot/vendor/kartik-v/yii2-widget-sidenav/SideNav.php:142
+[0x00007f56f2a15d40] init() /opt/webroot/vendor/yiisoft/yii2/base/BaseObject.php:108
+[0x00007f56f2a15cd0] __construct() /opt/webroot/vendor/yiisoft/yii2/di/Container.php:383
+[0x00007f56f2a15c70] newInstanceArgs() /opt/webroot/vendor/yiisoft/yii2/di/Container.php:383
+[0x00007f56f2a15b60] build() /opt/webroot/vendor/yiisoft/yii2/di/Container.php:156
+[0x00007f56f2a15a80] get() /opt/webroot/vendor/yiisoft/yii2/BaseYii.php:349
+[0x00007f56f2a159d0] createObject() /opt/webroot/vendor/yiisoft/yii2/base/Widget.php:137
+[0x00007f56f2a15910] widget() /opt/webroot/backend/views/layouts/main.php:36
