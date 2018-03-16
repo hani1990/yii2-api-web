@@ -30,13 +30,11 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-//        'urlManager' => [
-//            'enablePrettyUrl' => true,
-//            'showScriptName' => false,
-//            'rules' => [
-//                ''=>'site/index'
-//            ],
-//        ],
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+           
+        ],
         'cache' => [
              'class' => 'yii\caching\FileCache',
             //'class' => 'yii\redis\Cache',
@@ -46,7 +44,7 @@ $config = [
             'hostname' => '192.168.191.1',
             'port' => 6380,
             'database' => 0,
-            'password'  => 'just4juren',
+            'password'  => 'just4app',
         ],
         'authManager' => [
             'class' => 'mdm\admin\components\DbManager',

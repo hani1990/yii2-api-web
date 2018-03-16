@@ -7,7 +7,10 @@
  */
 
 namespace app\modules\v0\controllers;
-class TestController extends Controller
+use app\modules\v0\BaseController;
+use app\modules\v0\Controller;
+
+class TestController extends BaseController
 {
     
     /**
@@ -19,21 +22,21 @@ class TestController extends Controller
     {
         return [
             //设置 indexAction()的rule
-            'upload' => [
-                [['token'],'required'],
+            'index' => [
+              //  [['token'],'required'],
             ],
         ];
     }
 
     /**
-     * @desc 下发话题列表
+     * @desc test
      * @param string $token
      * */
-    public function actionTopics()
+    public function actionIndex()
     {
         $list = [];
         $banner = [];
-        return $this->result(['list' => $list, 'banner' => $banner]);
+        return ['list' => $list, 'banner' => $banner];
     }
 }
 
